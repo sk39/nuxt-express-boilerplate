@@ -1,0 +1,51 @@
+import io from 'socket.io-client'
+
+const targetEvents = ['batch-stat', 'events']
+
+export default class Subscriber {
+  static listeners: { [name: string]: Function[] } = {}
+
+  static connect() {
+    const socket = io(process.env.SERVER_URL)
+    socket.on('connect', () => console.log('connect'))
+
+    targetEvents.forEach((ev) => {
+      socket.on(ev, (data) => {
+        this.publish(ev, data)
+      })
+    })
+
+    socket.on('disconnect', () => console.log('disconnect'))
+  }
+
+  static subscribe(key, listener) {
+    if (!this.listeners[key]) {
+      this.listeners[key] = []
+    }
+
+    this.listeners[key].push(listener)
+  }
+
+  static unsubscribe(key, listener) {
+    if (!this.listeners[key]) {
+      return
+    }
+
+    //TODO:
+    this.unsubscribeAll(key)
+  }
+
+  static unsubscribeAll(key) {
+    if (!this.listeners[key]) {
+      return
+    }
+
+    this.listeners[key] = []
+  }
+
+  static publish(key, data) {
+    if (this.listeners[key]) {
+      this.listeners[key].forEach((listener) => listener(data))
+    }
+  }
+}

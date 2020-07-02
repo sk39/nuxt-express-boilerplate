@@ -1,0 +1,51 @@
+.sub-bar {
+  background: $color_header_back;
+  padding: 0.6rem 1.2rem;
+  border-top: 1px solid #ccc;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #666;
+}
+
+.v-btn {
+  text-transform: none !important;
+}
+
+@keyframes new_row_anime {
+  0% {
+    color: rgba($color_base_text, 0.72);
+    background: rgba($color_theme, 0.23);
+  }
+  42% {
+    color: rgba($color_base_text, 1);
+    background: rgba($color_theme, 0.1);
+  }
+  100% {
+    color: rgba($color_base_text, 1);
+    background: rgba($color_theme, 0);
+  }
+}
+
+.v-data-table {
+  .new-row {
+    td {
+      animation: new_row_anime 1.6s ease-in-out;
+    }
+  }
+}
+
+.page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.page--bottom {
+  height: 100%;
+  background: white;
+  border-top: thin solid rgba(0, 0, 0, 0.12);
+  padding-top: 12px;
+  //display: flex;
+  //flex-direction: column;
+  //justify-content: flex-end;
+}
