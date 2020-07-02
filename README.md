@@ -1,4 +1,4 @@
-# pref-tester-boilerplate
+# nuxt-express-boilerplate
 
 ## Build Setup
 
