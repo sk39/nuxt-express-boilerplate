@@ -39,12 +39,12 @@ export default class SimpleStringList extends Vue {
   height: 400px;
   overflow-y: scroll;
   padding: 16px 24px;
-  border: thin solid $color_theme;
+  border: thin solid #bec7bf;
   font-size: 0.8rem;
 }
 
 .list-item {
-  animation: add-list-row-anime 0.3s ease-in-out;
+  animation: add-list-row-anime 0.6s ease-in-out;
   &.error-text {
     color: $color_error;
   }

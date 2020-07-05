@@ -3,7 +3,7 @@
     <div class="sub-bar elevation-1">
       <div>Error</div>
     </div>
-    <v-container>
+    <v-container class="text-center">
       <h1 v-if="error.statusCode === 404">
         {{ pageNotFound }}
       </h1>
@@ -39,8 +39,16 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 h1 {
-  font-size: 20px;
+  font-size: 66px;
+  opacity: 0.7;
+  letter-spacing: 1px;
+  display: inline-block;
+  padding: 8px;
+  color: $color_error;
+}
+.text-center {
+  padding-top: 66px;
 }
 </style>
