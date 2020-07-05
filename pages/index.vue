@@ -18,15 +18,28 @@
       <v-container>
         <v-btn
           class="col-btn"
+          :loading="processingName === 'batchExample'"
           :disabled="batchProcessing"
           @click="batchExample"
         >
           <v-icon>mdi-chevron-right-box-outline</v-icon>
-          <span>batch example</span>
+          <span>Batch example</span>
         </v-btn>
-        <v-btn class="col-btn" @click="test">
+        <v-btn
+          class="col-btn"
+          :loading="processingName === 'test'"
+          @click="test"
+        >
           <v-icon>mdi-greater-than-or-equal</v-icon>
           <span>Test Api</span>
+        </v-btn>
+        <v-btn
+          class="col-btn"
+          :loading="processingName === 'testError'"
+          @click="testError"
+        >
+          <v-icon>mdi-alert-circle-outline</v-icon>
+          <span>Test Api Error</span>
         </v-btn>
       </v-container>
     </div>
@@ -49,6 +62,7 @@ export default class Index extends Vue {
   list = []
   disposers = []
   dataIndex = 0
+  processingName: string = null
 
   get batchProcessing() {
     return batchStore && batchStore.processing
@@ -60,7 +74,10 @@ export default class Index extends Vue {
       Subscriber.subscribe(
         'events',
         _.debounce((d) => {
-          this.add(`${d.date} ${d.type} ${d.message} ${d.status}`, 'event')
+          this.add(
+            `Event: ${d.date} ${d.type} ${d.message} ${d.status}`,
+            'event'
+          )
         }, 10)
       )
     )
@@ -82,7 +99,6 @@ export default class Index extends Vue {
   }
 
   add(text, clazz) {
-    // this.buffer.push(text)
     this.list.unshift({
       id: this.dataIndex++,
       text,
@@ -92,20 +108,46 @@ export default class Index extends Vue {
 
   async batchExample() {
     try {
-      await axios.post(`${API_URL}batch/example`)
+      this.processingName = 'batchExample'
+      const res = await axios.post(`${API_URL}batch/example`)
+      this.add(JSON.stringify(res.data), 'API')
     } catch (res) {
-      console.error(res.toJSON())
-      this.add('Batch api is failed', 'API')
+      this.add(
+        `Batch API Failed. ${JSON.stringify(res.toJSON().message)}`,
+        'API'
+      )
+    } finally {
+      this.processingName = null
     }
   }
 
   async test() {
     try {
-      await axios.post(`${API_URL}test`)
-      this.add('Test api is success', 'API')
+      this.processingName = 'test'
+      const res = await axios.post(`${API_URL}test`)
+      this.add(`Test API success. ${JSON.stringify(res.data.message)}`, 'API')
     } catch (res) {
-      console.error(res.toJSON())
-      this.add('Test api is failed', 'API')
+      this.add(
+        `Test API Failed. ${JSON.stringify(res.toJSON().message)}`,
+        'API Error'
+      )
+    } finally {
+      this.processingName = null
+    }
+  }
+
+  async testError() {
+    try {
+      this.processingName = 'testError'
+      const res = await axios.post(`${API_URL}test2`)
+      this.add(`Test API success. ${JSON.stringify(res.data.message)}`, 'API')
+    } catch (res) {
+      this.add(
+        `Test API Failed. ${JSON.stringify(res.toJSON().message)}`,
+        'API error-text'
+      )
+    } finally {
+      this.processingName = null
     }
   }
 }
@@ -127,17 +169,19 @@ export default class Index extends Vue {
 .page--bottom {
   padding: 32px 0;
 }
+
 .col-btn {
   width: 180px;
   margin: 12px;
 }
+
 .date-title-area {
   display: flex;
   align-items: center;
   font-weight: 500;
   padding: 12px 0 6px;
-  .v-icon {
-    margin-left: 16px;
+  .v-btn {
+    margin-left: 8px;
   }
 }
 </style>
