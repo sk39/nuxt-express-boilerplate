@@ -1,5 +1,7 @@
 import Redis from 'ioredis'
 
+const STORE_KEY_PREFIX = 'nuxt-express'
+const storeKey = (key) => `${STORE_KEY_PREFIX}-${key}`
 export default class RedisHelper {
   private static _pub
 
@@ -30,10 +32,9 @@ export default class RedisHelper {
     options?: { withPub?: boolean }
   ) {
     const redis = RedisHelper.create()
-    let res = null
     try {
       const json = JSON.stringify(model)
-      res = await redis.lpush(key, json)
+      await redis.lpush(storeKey(key), json)
       if (options && options.withPub) {
         this.publish(key, json)
       }
@@ -42,15 +43,13 @@ export default class RedisHelper {
     } finally {
       redis.disconnect()
     }
-
-    return res
   }
 
   static async list(key: string) {
     const redis = RedisHelper.create()
     let list = []
     try {
-      const res = await redis.lrange(key, 0, -1)
+      const res = await redis.lrange(storeKey(key), 0, -1)
       if (!res) {
         return []
       }
@@ -62,5 +61,20 @@ export default class RedisHelper {
     }
 
     return list
+  }
+
+  static async del(keys: string[]) {
+    const redis = RedisHelper.create()
+    try {
+      await Promise.all(
+        keys.map(async (key) => {
+          return await redis.del(storeKey(key))
+        })
+      )
+    } catch (e) {
+      console.error('Error RedisHelper#del', e)
+    } finally {
+      redis.disconnect()
+    }
   }
 }

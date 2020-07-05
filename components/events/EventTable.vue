@@ -6,6 +6,11 @@
     :item-class="rowClass"
     dense
   >
+    <template v-slot:item.status="{ item }">
+      <div class="status-cell" :class="item.status">
+        <span>{{ item.status }}</span>
+      </div>
+    </template>
   </v-data-table>
 </template>
 
@@ -27,8 +32,20 @@ export default class EventTable extends Vue {
   headers = [
     { text: 'Date', value: 'date', align: '' },
     { text: 'Type', value: 'type', align: '' },
-    { text: 'Message', value: 'message', align: '' },
+    { text: 'Message', value: 'message', width: '50%', align: '' },
     { text: 'Status', value: 'status', align: '' },
   ]
 }
 </script>
+
+<style lang="scss" scoped>
+.status-cell {
+  font-weight: 500;
+  &.SUCCESS {
+    color: $color_success;
+  }
+  &.ERROR {
+    color: $color_error;
+  }
+}
+</style>

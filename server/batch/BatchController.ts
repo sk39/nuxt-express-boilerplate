@@ -9,7 +9,7 @@ interface BatchStatus {
 
 export default class BatchController {
   private static statMap: { [name: string]: BatchStatus } = {}
-
+  static KEY = 'batch-stat'
   private static setStat(taskName: string, progress: number) {
     if (this.statMap[taskName]) {
       if (this.statMap[taskName].progress !== progress) {
@@ -24,7 +24,7 @@ export default class BatchController {
       }
     }
 
-    RedisHelper.publishObj('batch-stat', { taskName, progress })
+    RedisHelper.publishObj(this.KEY, { taskName, progress })
   }
 
   private static monitorBatch(taskName: string, batch: Batch) {
@@ -37,7 +37,6 @@ export default class BatchController {
     batch.end((err) => {
       this.setStat(taskName, 100)
       EventCollection.save({
-        date: new Date().toLocaleString(),
         type: 'Batch',
         message: `[${taskName}] is Finish`,
         status: err ? 'ERROR' : 'SUCCESS',

@@ -8,20 +8,25 @@ export default class Batch extends VuexModule {
   processing: boolean = false
 
   @Mutation
-  setStat({ task, progress }) {
+  setStat({ task, progress, processing }) {
     this.currentTask = task
     this.progress = progress
-    this.processing = progress != null && Number(progress) !== 100
+    this.processing = processing || false
   }
 
   @Action
-  prepare() {
+  startSubscribe() {
     Subscriber.subscribe('batch-stat', (data) => {
-      this.setStat({ task: data.taskName, progress: data.progress.toFixed(1) })
-      if (String(data.progress) === '100') {
+      const processing = data.progress != null && Number(data.progress) !== 100
+      this.setStat({
+        task: data.taskName,
+        progress: data.progress.toFixed(1),
+        processing,
+      })
+      if (!processing) {
         setTimeout(() => {
-          this.setStat({ task: '', progress: null })
-        }, 2000)
+          this.setStat({ task: '', progress: null, processing })
+        }, 2600)
       }
     })
   }

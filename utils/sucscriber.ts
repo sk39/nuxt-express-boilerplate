@@ -24,6 +24,9 @@ export default class Subscriber {
     }
 
     this.listeners[key].push(listener)
+    return () => {
+      Subscriber.unsubscribe(key, listener)
+    }
   }
 
   static unsubscribe(key, listener) {
@@ -31,8 +34,12 @@ export default class Subscriber {
       return
     }
 
-    //TODO:
-    this.unsubscribeAll(key)
+    const arr = this.listeners[key]
+    const idx = arr.findIndex((_listener) => _listener === listener)
+    if (idx >= 0) {
+      arr.splice(idx, 1)
+    }
+    console.log('unsubscribe', idx, key, arr.length)
   }
 
   static unsubscribeAll(key) {

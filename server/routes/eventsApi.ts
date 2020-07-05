@@ -13,4 +13,9 @@ router.post('/', async (req: express.Request, res: express.Response) => {
   res.send({ message: '[success] post event api' })
 })
 
+router.post('/clear', async (req: express.Request, res: express.Response) => {
+  await EventCollection.clear()
+  res.send({ message: '[success] post event/clear api' })
+})
+
 export default router

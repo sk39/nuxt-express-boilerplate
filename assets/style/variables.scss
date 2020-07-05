@@ -12,9 +12,9 @@ $color_header_back: #fff;
 $color_base_back: #f1f1f1;
 $color_base_text: #272832;
 $color_base_border: #c1c1c1;
-
+$color_success: #00c68e;
+$color_error: #ff5252;
 $material-light: (
   'background': $color_base_back,
-  'app-bar': $color_header_back
+  'app-bar': $color_header_back,
 );
-

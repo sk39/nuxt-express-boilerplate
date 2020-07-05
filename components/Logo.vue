@@ -2,7 +2,8 @@
   <div class="logo">
     <SvgIcon :style="{ width: size + 'px', height: size + 'px' }" />
     <span class="logo-text" :style="{ fontSize: textSize + 'px' }">
-      nuxt-express
+      <span>nuxt</span>
+      <span>express</span>
     </span>
   </div>
 </template>
@@ -29,9 +30,15 @@ export default class Logo extends Vue {
 }
 
 .logo-text {
-  color: $color_theme;
+  > :first-child {
+    transform: scaleY(1.2);
+  }
+  > :last-child {
+    color: $color_theme;
+  }
+
   margin-left: 12px;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   font-weight: 700;
 }
 </style>

@@ -8,7 +8,7 @@ let batchStore: Batch
 function initialiseStores(store: Store<any>): void {
   Subscriber.connect()
   batchStore = getModule(Batch, store)
-  batchStore.prepare()
+  batchStore.startSubscribe()
 }
 
 export { initialiseStores, batchStore }

@@ -8,21 +8,20 @@
         <v-text-field
           v-model="newEvent.message"
           :disabled="posting"
-          label="Message"
+          label="Event Message"
         />
         <v-btn
           color="primary"
-          width="125"
           :loadgin="posting"
           :disabled="!newEvent.message || newEvent.message.length === 0"
           @click="addEvent"
+          fab
         >
-          <v-icon left>mdi-plus</v-icon>
-          Add
+          <v-icon>mdi-plus</v-icon>
         </v-btn>
       </v-container>
     </div>
-    <div class="page--bottom list-area">
+    <div class="page--bottom page--full list-area">
       <EventTable :list="events" :loading="loading" />
     </div>
   </div>
@@ -40,24 +39,29 @@ const API_URL = `${process.env.SERVER_URL}api/`
 export default class Index extends Vue {
   loading = false
   posting = false
+  disposers = []
   events = []
   newEvent = {
-    date: '',
     type: 'Client',
     message: '',
   }
 
   mounted() {
-    Subscriber.subscribe('events', (data) => {
-      let newEvent = Object.assign({}, data, {
-        newRow: true,
+    const { disposers } = this
+    disposers.push(
+      Subscriber.subscribe('events', (data) => {
+        let newEvent = Object.assign({}, data, {
+          newRow: true,
+        })
+        this.events.unshift(newEvent)
+        setTimeout(() => (newEvent.newRow = false), 1800)
       })
-      this.events.unshift(newEvent)
-      setTimeout(() => {
-        newEvent.newRow = false
-      }, 1800)
-    })
+    )
     this.load()
+  }
+
+  beforeDestroy() {
+    this.disposers.forEach((disposer) => disposer())
   }
 
   async load() {
@@ -75,9 +79,7 @@ export default class Index extends Vue {
   async addEvent() {
     try {
       this.posting = true
-      const { newEvent } = this
-      newEvent.date = new Date().toLocaleString()
-      const res = await axios.post(`${API_URL}events`, newEvent)
+      const res = await axios.post(`${API_URL}events`, this.newEvent)
       this.newEvent.message = ''
       console.log('res', res)
     } catch (res) {
@@ -95,7 +97,7 @@ export default class Index extends Vue {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 22px 12px 32px;
+  padding: 22px 32px 32px;
   .v-btn {
     margin-left: 32px;
   }
