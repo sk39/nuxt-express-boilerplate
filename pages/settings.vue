@@ -25,32 +25,60 @@
         </div>
       </v-container>
     </div>
+    <ProcessDialog :value="process" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import axios from 'axios'
+import ProcessModel from '~/components/notify/ProcessModel'
+import ProcessDialog from '~/components/notify/ProcessDialog.vue'
 
 const API_URL = `${process.env.SERVER_URL}api/`
 
-@Component({ components: {} })
-export default class Index extends Vue {
-  loadingTask: string
+@Component({ components: { ProcessDialog } })
+export default class Settings extends Vue {
+  process = new ProcessModel()
 
   async clearEvent() {
-    try {
-      this.loadingTask = 'clearEvent'
-      const res = await axios.post(`${API_URL}events/clear`)
-    } catch (res) {
-      console.error(res.toJSON())
-    } finally {
-      this.loadingTask = ''
-    }
+    const { process } = this
+    process
+      .confirm({
+        title: 'Clear Event',
+        message: 'Do you really want to clear the event?',
+      })
+      .done(async () => {
+        try {
+          process.processing()
+          await axios.post(`${API_URL}events/clear`)
+          process.success({
+            message: 'Events cleared successfully.',
+          })
+        } catch (res) {
+          process.error({ message: res.toJSON().message })
+        }
+      })
   }
 
   async clearUser() {
-    alert('TODO:')
+    const { process } = this
+    process
+      .confirm({
+        title: 'Clear User',
+        message: 'Do you really want to clear the user?',
+      })
+      .done(async () => {
+        try {
+          process.processing()
+          await axios.post(`${API_URL}user/clear`)
+          process.success({
+            message: 'Users cleared successfully.',
+          })
+        } catch (res) {
+          process.error({ message: res.toJSON().message })
+        }
+      })
   }
 }
 </script>

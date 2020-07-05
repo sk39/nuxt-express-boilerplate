@@ -38,7 +38,7 @@ export default class BatchController {
       this.setStat(taskName, 100)
       EventCollection.save({
         type: 'Batch',
-        message: `[${taskName}] is Finish`,
+        message: `${taskName} is Finish`,
         status: err ? 'ERROR' : 'SUCCESS',
       })
     })

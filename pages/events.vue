@@ -36,7 +36,7 @@ import Subscriber from '~/utils/sucscriber'
 const API_URL = `${process.env.SERVER_URL}api/`
 
 @Component({ components: { EventTable } })
-export default class Index extends Vue {
+export default class Events extends Vue {
   loading = false
   posting = false
   disposers = []

@@ -7,7 +7,7 @@
       <v-container>
         <div class="date-title-area">
           <span>Data stream</span>
-          <v-btn color="primary" icon @click="list = []">
+          <v-btn icon @click="list = []">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </div>
@@ -139,7 +139,7 @@ export default class Index extends Vue {
   async testError() {
     try {
       this.processingName = 'testError'
-      const res = await axios.post(`${API_URL}test2`)
+      const res = await axios.post(`${API_URL}test/error/400`)
       this.add(`Test API success. ${JSON.stringify(res.data.message)}`, 'API')
     } catch (res) {
       this.add(

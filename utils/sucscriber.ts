@@ -39,7 +39,6 @@ export default class Subscriber {
     if (idx >= 0) {
       arr.splice(idx, 1)
     }
-    console.log('unsubscribe', idx, key, arr.length)
   }
 
   static unsubscribeAll(key) {
